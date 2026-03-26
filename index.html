@@ -157,6 +157,10 @@
 
     function showResult() {
       const arc = (2 * Math.PI) / languages.length;
+
+      // Ajuste porque el puntero está arriba (π/2)
+      const adjustedAngle = (angle + Math.PI / 2) % (2 * Math.PI);
+      
       const index = Math.floor((languages.length - (angle % (2 * Math.PI)) / arc)) % languages.length;
       document.getElementById("result").textContent = "Idioma seleccionado: " + languages[index];
     }
