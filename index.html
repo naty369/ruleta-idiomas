@@ -124,6 +124,9 @@
       const spinTime = Math.random() * 3000 + 2000;
       const start = performance.now();
 
+      // ángulo final aleatorio (varias vueltas + offset aleatorio)
+      const finalAngle = (Math.random() * 4 + 6) * Math.PI; // entre 6π y 10π
+
       function animate(time) {
         const elapsed = time - start;
         const progress = Math.min(elapsed / spinTime, 1);
