@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruleta de Idiomas</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    canvas {
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .pointer {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid #facc15;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background-color: #facc15;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>¿Qué idioma hablaremos hoy?</h1>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="300" height="300"></canvas>
+  </div>
+  <button onclick="spinWheel()">Girar</button>
+  <div id="result"></div>
+
+  <script>
+    const languages = [
+      "Español",
+      "Portugués",
+      "Inglés",
+      "Francés",
+      "Italiano",
+      "Indonesio",
+      "Chino",
+      "Ruso",
+      "Árabe"
+    ];
+
+    const colors = [
+      "#ef4444", "#3b82f6", "#22c55e", "#eab308",
+      "#a855f7", "#f97316", "#14b8a6", "#ec4899", "#8b5cf6"
+    ];
+
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const radius = canvas.width / 2;
+
+    let angle = 0;
+
+    function drawWheel() {
+      const arc = (2 * Math.PI) / languages.length;
+
+      for (let i = 0; i < languages.length; i++) {
+        const start = i * arc;
+        ctx.beginPath();
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(radius, radius);
+        ctx.arc(radius, radius, radius, start, start + arc);
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(radius, radius);
+        ctx.rotate(start + arc / 2);
+        ctx.fillStyle = "white";
+        ctx.font = "14px Arial";
+        ctx.fillText(languages[i], radius / 2, 5);
+        ctx.restore();
+      }
+    }
+
+    function spinWheel() {
+      const spinTime = Math.random() * 3000 + 2000;
+      const start = performance.now();
+
+      function animate(time) {
+        const elapsed = time - start;
+        const progress = Math.min(elapsed / spinTime, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+
+        angle = easeOut * 10 * Math.PI;
+        drawRotatedWheel(angle);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          showResult();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function drawRotatedWheel(rotation) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(rotation);
+      ctx.translate(-radius, -radius);
+      drawWheel();
+      ctx.restore();
+    }
+
+    function showResult() {
+      const arc = (2 * Math.PI) / languages.length;
+      const index = Math.floor((languages.length - (angle % (2 * Math.PI)) / arc)) % languages.length;
+      document.getElementById("result").textContent = "Idioma seleccionado: " + languages[index];
+    }
+
+    drawWheel();
+  </script>
+</body>
+</html>
