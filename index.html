@@ -132,7 +132,7 @@
         const progress = Math.min(elapsed / spinTime, 1);
         const easeOut = 1 - Math.pow(1 - progress, 3);
 
-        angle = easeOut * 10 * Math.PI;
+        angle = easeOut * finalAngle;
         drawRotatedWheel(angle);
 
         if (progress < 1) {
@@ -161,7 +161,8 @@
       // Ajuste porque el puntero está arriba (π/2)
       const adjustedAngle = (angle + Math.PI / 2) % (2 * Math.PI);
       
-      const index = Math.floor((languages.length - (angle % (2 * Math.PI)) / arc)) % languages.length;
+      const index = Math.floor((languages.length - adjusteAngle / arc)) % languages.length;
+      
       document.getElementById("result").textContent = "Idioma seleccionado: " + languages[index];
     }
 
